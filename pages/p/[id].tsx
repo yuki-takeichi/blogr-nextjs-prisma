@@ -3,24 +3,28 @@ import { GetServerSideProps } from "next";
 import ReactMarkdown from "react-markdown";
 import Layout from "../../components/Layout";
 import Router from "next/router";
-import { PostProps } from "../../components/Post";
 import { useSession } from "next-auth/react";
 import prisma from "../../lib/prisma";
 
 export const authorIncludeQuery = { select: { name: true, email: true }}
 
-export const getServerSideProps: GetServerSideProps<PostProps> = async ({ params }) => {
+// https://stackoverflow.com/a/49889856/1325832
+export type PostProps = Awaited<ReturnType<typeof findUniquePost>>
+
+const findUniquePost = async (id: string) => {
   const post = await prisma.post.findUnique({
     where: {
-      id: String(params?.id),
+      id,
     },
     include: {
       author: authorIncludeQuery,
     },
   });
-  return {
-    props: post,
-  };
+  return post;
+}
+
+export const getServerSideProps: GetServerSideProps<PostProps> = async ({ params }) => {
+  return {props: await findUniquePost(String(params?.id))};
 };
 
 async function publishPost(id: string): Promise<void> {
