@@ -7,6 +7,8 @@ import prisma from "../lib/prisma";
 import { authorIncludeQuery, PostProps } from "./p/[id]";
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
+  // TODO use unstable_getSeverSessin instead
+  // https://next-auth.js.org/configuration/nextjs#unstable_getserversession
   const session = await getSession({ req });
   if (!session) {
     res.statusCode = 403;

@@ -8,6 +8,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   const { title, content } = req.body;
 
+  // TODO use unstable_getSeverSessin instead
+  // https://next-auth.js.org/configuration/nextjs#unstable_getserversession
   const session = await getSession({ req });
   const result = await prisma.post.create({
     data: {
