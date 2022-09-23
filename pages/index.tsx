@@ -3,14 +3,13 @@ import type { GetStaticProps } from "next"
 import Layout from "../components/Layout"
 import Post, { PostProps } from "../components/Post"
 import prisma from "../lib/prisma";
+import { authorIncludeQuery } from "./p/[id]";
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const feed = await prisma.post.findMany({
     where: { published: true },
     include: {
-      author: {
-        select: { name: true, email: true },
-      },
+      author: authorIncludeQuery,
     },
   })
   return {

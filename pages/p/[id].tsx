@@ -7,15 +7,15 @@ import { PostProps } from "../../components/Post";
 import { useSession } from "next-auth/react";
 import prisma from "../../lib/prisma";
 
+export const authorIncludeQuery = { select: { name: true, email: true }}
+
 export const getServerSideProps: GetServerSideProps<PostProps> = async ({ params }) => {
   const post = await prisma.post.findUnique({
     where: {
       id: String(params?.id),
     },
     include: {
-      author: {
-        select: { name: true, email: true },
-      },
+      author: authorIncludeQuery,
     },
   });
   return {
